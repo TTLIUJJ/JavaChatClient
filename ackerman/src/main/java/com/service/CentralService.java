@@ -48,10 +48,9 @@ public class CentralService{
                 writer.flush();
 
                 channel.read(buffer);
-                String response = new String(buffer.array(), 0, 256, "UTF-8");
+                String response = new String(buffer.array(), 0, buffer.position(), "UTF-8");
                 System.out.println(response);
                 buffer.clear();
-
             }
             System.out.println("close client with exit");
         }catch (IOException ioe){
@@ -114,6 +113,7 @@ public class CentralService{
         switch (mode){
             case 'p':
                 System.out.println("send message to friend");
+                System.out.println(requestInfo.toString());
                 break;
             case 'g':
                 break;

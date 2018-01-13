@@ -21,6 +21,8 @@ public class ServerService {
     private JedisUtil jedisUtil = new JedisUtil();
 
     public EventState extractMessage(char[] chars, Map<String, String> map){
+        System.out.println("print request: " + new String(chars, 0, chars.length));
+
         int i = parseCmd(chars, 0, map);
         try{
             while(i < chars.length){
