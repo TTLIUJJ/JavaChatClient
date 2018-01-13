@@ -150,13 +150,24 @@ public class EchoClient {
     public static void startUDPCServerWithChannel(){
         DatagramChannel channel = null;
         try{
+            // 此udp服务器只用于接受udp消息, 使用与TCP一样的端口
             channel = DatagramChannel.open();
             DatagramSocket socket = channel.socket();
             SocketAddress address = new InetSocketAddress(8080);
             socket.bind(address);
-            channel.configureBlocking(false);
+//            channel.configureBlocking(false);
 
-
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            while(true){
+                //接受消息
+                SocketAddress client = channel.receive(buffer);
+                System.out.println("UDPServer receive from: " + client.toString());
+                char []myChars = getChars(buffer.array());
+                for(char c: myChars){
+                    System.out.print(c);
+                }
+                buffer.clear();
+            }
 
         }catch (Exception e){
             System.out.println("emmm.....");
