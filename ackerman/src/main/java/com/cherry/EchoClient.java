@@ -148,7 +148,7 @@ public class EchoClient {
     }
 
     public static void startUDPCServerWithChannel(){
-        final int port = 8080;
+        final int port = 12345;
         try{
             // 此udp服务器只用于接受udp消息, 使用与TCP一样的端口
             DatagramSocket socket = new DatagramSocket(port);
