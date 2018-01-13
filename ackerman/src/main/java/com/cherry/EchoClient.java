@@ -153,15 +153,18 @@ public class EchoClient {
             // 此udp服务器只用于接受udp消息, 使用与TCP一样的端口
             DatagramSocket socket = new DatagramSocket(port);
 
-
             while(true){
                 //接受消息
+                System.out.println("in the server loop");
                 byte [] bytes = new byte[1024];
                 DatagramPacket request = new DatagramPacket(bytes, 1024);
                 socket.receive(request);
+                System.out.println("already receive msg");
+
                 String str = new String(bytes, 0, bytes.length);
                 System.out.println("receive MSG from: " + request.getSocketAddress());
                 System.out.println(str);
+
             }
 
         }catch (Exception e){
