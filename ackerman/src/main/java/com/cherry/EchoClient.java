@@ -148,38 +148,32 @@ public class EchoClient {
     }
 
     public static void startUDPCServerWithChannel(){
-        DatagramChannel channel = null;
+        final int port = 8080;
         try{
             // 此udp服务器只用于接受udp消息, 使用与TCP一样的端口
-            channel = DatagramChannel.open();
-            DatagramSocket socket = channel.socket();
-            SocketAddress address = new InetSocketAddress(8080);
-            socket.bind(address);
-//            channel.configureBlocking(false);
+            DatagramSocket socket = new DatagramSocket(port);
 
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
+
             while(true){
                 //接受消息
-                System.out.println("in the loop");
-                SocketAddress client = channel.receive(buffer);
-                System.out.println("UDPServer receive from: " + client.toString());
-                char []myChars = getChars(buffer.array());
-                for(char c: myChars){
-                    System.out.print(c);
-                }
-                buffer.clear();
+                byte [] bytes = new byte[1024];
+                DatagramPacket request = new DatagramPacket(bytes, 1024);
+                socket.receive(request);
+                String str = new String(bytes, 0, bytes.length);
+                System.out.println("receive MSG from: " + request.getSocketAddress());
+                System.out.println(str);
             }
 
         }catch (Exception e){
             System.out.println("emmm.....");
         }finally {
-            if(channel != null){
-                try{
-                    channel.close();
-                }catch (IOException e){
-                    System.out.println("channel close exception");
-                }
-            }
+//            if(channel != null){
+//                try{
+//                    channel.close();
+//                }catch (IOException e){
+//                    System.out.println("channel close exception");
+//                }
+//            }
         }
     }
 
