@@ -1,7 +1,5 @@
 package com.service;
 
-import com.sun.corba.se.spi.ior.ObjectKey;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +24,7 @@ public class ServiceUtil {
             if(request.length() < 8){
                 return null;
             }
+            //send -p
             info.put("mode", request.charAt(6));
             StringBuilder sb = new StringBuilder();
             int i = 8;
@@ -37,15 +36,13 @@ public class ServiceUtil {
                 sb.append(c);
             }
             info.put("friend", sb.toString());
-            sb.replace(0, sb.length(), "");
-
             //没有输入消息
             //i+1 跳过message的前一个空格
             if(i++ == request.length()){
                 info.put("exception", "please enter some message");
                 return info;
             }
-            String msg = new String(request.toCharArray(), i, request.length());
+            String msg = request.substring(i);
             info.put("msg", msg);
             return info;
         }catch (Exception e){

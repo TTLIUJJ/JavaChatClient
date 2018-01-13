@@ -206,21 +206,21 @@ public class EchoClient {
         }
     }
 
-
-    public static void main(String []args) throws  InterruptedException{
+//
+//    public static void main(String []args) throws  InterruptedException{
 //        startClient();
 //        start2();
 //        startTCPClient();
 //        startUDPClient();
-
+//
 //        Thread tcp = new Thread(new TCPThread());
-        Thread udp = new Thread(new UDPThread());
+//        Thread udp = new Thread(new UDPThread());
 //        tcp.start();
-        udp.start();
-
+//        udp.start();
+//
 //        tcp.join();
-        udp.join();
-    }
+//        udp.join();
+//    }
 
 
     public static String parseByteBuffer(ByteBuffer buffer){
