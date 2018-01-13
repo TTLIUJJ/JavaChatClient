@@ -160,6 +160,7 @@ public class EchoClient {
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             while(true){
                 //接受消息
+                System.out.println("in the loop");
                 SocketAddress client = channel.receive(buffer);
                 System.out.println("UDPServer receive from: " + client.toString());
                 char []myChars = getChars(buffer.array());
@@ -215,12 +216,12 @@ public class EchoClient {
 //        startTCPClient();
 //        startUDPClient();
 
-        Thread tcp = new Thread(new TCPThread());
+//        Thread tcp = new Thread(new TCPThread());
         Thread udp = new Thread(new UDPThread());
-        tcp.start();
+//        tcp.start();
         udp.start();
 
-        tcp.join();
+//        tcp.join();
         udp.join();
     }
 
