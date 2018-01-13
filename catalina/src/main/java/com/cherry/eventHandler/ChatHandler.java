@@ -4,6 +4,7 @@ import com.cherry.centralServerSystem.ServerService;
 import com.cherry.utils.JedisUtil;
 import com.cherry.utils.UserModel;
 
+import java.nio.channels.SelectionKey;
 import java.util.Map;
 
 public class ChatHandler implements EventHandler{

@@ -18,20 +18,18 @@ public class CentralService{
     private ServiceUtil serviceUtil = new ServiceUtil();
     private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
-    //用户交流通信各式
-    //单聊 send -p 234567  hello world!!!
-    //群聊 send -g 11223   hello buddy
-    // .
-    //此条命令会 创建或者复用已存在的udp端口
+
     public void correspondWithJayna(){
         SocketChannel channel = null;
         try{
-            InetSocketAddress socketAddress = new  InetSocketAddress(TCP_HOST, TCP_PORT);
-            channel = SocketChannel.open(socketAddress);
+            InetSocketAddress remoteSocketAddress = new InetSocketAddress(TCP_PORT);
+            channel = SocketChannel.open(remoteSocketAddress);
             Socket socket = channel.socket();
+
             Writer writer = new OutputStreamWriter(socket.getOutputStream());
             Scanner scanner = new Scanner(System.in);
             ByteBuffer buffer = ByteBuffer.allocate(256);
+
             String line;
             while(true){
                 line = scanner.nextLine();
@@ -50,6 +48,8 @@ public class CentralService{
                 channel.read(buffer);
                 String response = new String(buffer.array(), 0, buffer.position(), "UTF-8");
                 System.out.println(response);
+
+                System.out.println(socket.getLocalSocketAddress());
                 buffer.clear();
             }
             System.out.println("close client with exit");
@@ -66,7 +66,11 @@ public class CentralService{
         }
     }
 
-
+    //用户交流通信各式
+    //单聊 send -p 234567  hello world!!!
+    //群聊 send -g 11223   hello buddy
+    // .
+    //此条命令会 创建或者复用已存在的udp端口
 
     //该UDPServer只用于接受消息
     //因为每个用户的udpServer使用约定而同的端口,
@@ -76,7 +80,6 @@ public class CentralService{
         DatagramSocket socket = null;
         try{
             socket = new DatagramSocket(UDP_PORT);
-
             while (true) {
                 byte []bytes = new byte[256];
                 DatagramPacket request = new DatagramPacket(bytes, 0, 256);
@@ -113,6 +116,7 @@ public class CentralService{
         switch (mode){
             case 'p':
                 System.out.println("send message to friend");
+
                 System.out.println(requestInfo.toString());
                 break;
             case 'g':

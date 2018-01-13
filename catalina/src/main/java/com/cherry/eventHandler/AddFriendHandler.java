@@ -5,6 +5,7 @@ import com.cherry.utils.EntityUtil;
 import com.cherry.utils.JedisUtil;
 
 import javax.swing.text.html.parser.Entity;
+import java.nio.channels.SelectionKey;
 import java.util.Map;
 
 public class AddFriendHandler implements EventHandler {

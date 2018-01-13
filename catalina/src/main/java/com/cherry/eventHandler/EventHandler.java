@@ -1,6 +1,8 @@
 package com.cherry.eventHandler;
 
-import java.util.Map;
+
+import java.nio.channels.SelectionKey;
+import java.util.*;
 
 
 public interface EventHandler {
@@ -8,4 +10,6 @@ public interface EventHandler {
     boolean requireAuthority();
 //    String responseMessage(EventState code);
 //    Map<String, Object> extractMessage(char []chars);
+
+
 }

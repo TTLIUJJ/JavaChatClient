@@ -1,10 +1,12 @@
 package com.cherry.eventHandler;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cherry.centralServerSystem.ServerService;
 import com.cherry.utils.EntityUtil;
 import com.cherry.utils.JedisUtil;
+import com.cherry.utils.UserModel;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +37,6 @@ public class QueryHandler implements EventHandler {
             else{
                 return EventState.COMMAND_ERROR;
             }
-
         }catch (Exception e){
             e.getStackTrace();
         }
@@ -47,28 +48,16 @@ public class QueryHandler implements EventHandler {
     }
 
     private EventState queryAliveFriends(String userId){
-        String myFriendsKey = EntityUtil.getMyFriendKey(userId);
-        Set<String> friendSet = jedisUtil.smembers(myFriendsKey);
-
-        String aliveUserKey = EntityUtil.ALIVE_SET;
-        Set<String> aliveSet = jedisUtil.smembers(aliveUserKey);
-
-        Set<String> onlineFriends = new HashSet<String>();
-        for(String friendId : friendSet){
-            if(aliveSet.contains(friendId)){
-                onlineFriends.add(friendId);
-            }
-        }
-        aliveSet.remove(userId);    //在线好友列表中删除自己
-        EventState state = EventState.RESPONSE_OK.setMsg("onLine Friend Id " + aliveSet + "\r\n");
-        return state;
+        List<UserModel> userList = serverService.getAliveFriendListInfo(userId);
+        EventState.RESPONSE_OK.setMsg("OK\r\n" + JSONObject.toJSONString(userList));
+        return EventState.RESPONSE_OK;
     }
 
     private EventState qeuryAllFriends(String userId){
         String myFriendsKey = EntityUtil.getMyFriendKey(userId);
         Set<String> friendSet = jedisUtil.smembers(myFriendsKey);
-        EventState state = EventState.RESPONSE_OK.setMsg("All Friends Id " + friendSet.toString() + "\r\n");
-
-        return state;
+        EventState.RESPONSE_OK.setMsg("All Friends Id " + friendSet.toString() + "\r\n");
+        return EventState.RESPONSE_OK;
     }
+
 }

@@ -1,11 +1,16 @@
 package com.cherry.centralServerSystem;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cherry.eventHandler.EventState;
 import com.cherry.utils.EntityUtil;
 import com.cherry.utils.JedisUtil;
 import com.cherry.utils.UserModel;
 
+import java.nio.channels.SelectionKey;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 //信息格式
 //注册：register -u 123456 -n ackerman -p cherry123
@@ -117,4 +122,42 @@ public class ServerService {
         }
         return null;
     }
+
+    public List<UserModel> getAliveFriendListInfo(String userId){
+        String myFriendsKey = EntityUtil.getMyFriendKey(userId);
+        Set<String> friendSet = jedisUtil.smembers(myFriendsKey);
+
+        String aliveUserKey = EntityUtil.ALIVE_SET;
+        Set<String> aliveSet = jedisUtil.smembers(aliveUserKey);
+
+        List<UserModel> userModelList = new ArrayList<UserModel>();
+        for(String friendId : friendSet){
+            if(aliveSet.contains(friendId) && !friendId.equals(userId)){
+                UserModel user = parseUserById(friendId);
+                userModelList.add(user);
+            }
+        }
+        return userModelList;
+    }
+
+    private UserModel parseUserById(String id){
+        try{
+            String userKey = EntityUtil.getUserKey(id);
+            String nickname = jedisUtil.hmget(userKey, "nickname");
+            String ip = jedisUtil.hmget(userKey, "ip");
+            String port = jedisUtil.hmget(userKey, "port");
+
+            UserModel user = new UserModel();
+            user.setUserId(id)
+                    .setIp(ip)
+                    .setPort(port)
+                    .setNickname(nickname);
+
+            return user;
+        }catch (Exception e){
+            System.out.println("parseUserById exception");
+        }
+        return null;
+    }
+
 }
