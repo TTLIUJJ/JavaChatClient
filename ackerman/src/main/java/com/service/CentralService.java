@@ -6,23 +6,22 @@ import java.io.Writer;
 import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.concurrent.*;
+import java.util.*;
 
 public class CentralService{
     private static final String TCP_HOST = "101.132.181.76";
+    private static final String UDP_HOST = "101.132.181.76";
     private static final int TCP_PORT = 8080;
     private static final int UDP_PORT = 12345;
 
     private ServiceUtil serviceUtil = new ServiceUtil();
-    private ExecutorService executorService = Executors.newFixedThreadPool(10);
 
+    private Map<String, UserModel> onlineFriends = new HashMap<String, UserModel>();
 
     public void correspondWithJayna(){
         SocketChannel channel = null;
         try{
-            InetSocketAddress remoteSocketAddress = new InetSocketAddress(TCP_PORT);
+            InetSocketAddress remoteSocketAddress = new InetSocketAddress(TCP_HOST, TCP_PORT);
             channel = SocketChannel.open(remoteSocketAddress);
             Socket socket = channel.socket();
 
@@ -41,12 +40,17 @@ public class CentralService{
                     chatWithFriendService(line);
                     continue;
                 }
+
                 //往Jayna中央服务器请求数据
                 writer.write(line);
                 writer.flush();
 
                 channel.read(buffer);
                 String response = new String(buffer.array(), 0, buffer.position(), "UTF-8");
+
+                if(command.equals("query")){
+                    response = serviceUtil.extractWithQueryInfo(response, onlineFriends);
+                }
                 System.out.println(response);
 
                 System.out.println(socket.getLocalSocketAddress());
@@ -99,6 +103,7 @@ public class CentralService{
         }
     }
 
+    //主动发消息者为客户端
     private void chatWithFriendService(String request){
         Map<String, Object> requestInfo = serviceUtil.parseChatMessage(request);
         if(requestInfo == null){
@@ -116,6 +121,19 @@ public class CentralService{
         switch (mode){
             case 'p':
                 System.out.println("send message to friend");
+
+                UserModel user = onlineFriends.get((String) requestInfo.get("friend"));
+                String ip = user.getIp();
+                try{
+                    DatagramSocket socket = new DatagramSocket();
+                    InetAddress server = InetAddress.getByName(ip);
+                    byte[] bytes = ((String)requestInfo.get("msg")).getBytes();
+                    DatagramPacket message = new DatagramPacket(bytes, bytes.length, server, UDP_PORT);
+                    socket.send(message);
+                    System.out.println("after send message");
+                }catch (IOException e){
+                    System.out.println("IOException in chat mode p");
+                }
 
                 System.out.println(requestInfo.toString());
                 break;

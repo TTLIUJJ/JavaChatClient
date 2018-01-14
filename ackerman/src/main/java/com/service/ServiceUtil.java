@@ -1,7 +1,8 @@
 package com.service;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.fastjson.JSONObject;
+
+import java.util.*;
 
 public class ServiceUtil {
 
@@ -50,5 +51,23 @@ public class ServiceUtil {
             info.put("exception", "system exception");
         }
         return null;
+    }
+
+    public String extractWithQueryInfo(String response, Map<String, UserModel> onlineFriends){
+        int pos = 0;
+        for(int i = 0; i < response.length(); ++i){
+            if (response.charAt(i) == '\n'){
+                pos = i;
+                break;
+            }
+        }
+        String ret = response.substring(0, ++pos);
+        String msg = response.substring(pos, response.length());
+        String []strings = msg.split(";");
+        for(String jsonModel : strings){
+            UserModel userModel = JSONObject.parseObject(jsonModel, UserModel.class);
+            onlineFriends.put(userModel.getUserId(), userModel);
+        }
+        return ret;
     }
 }

@@ -129,11 +129,13 @@ public class ServerService {
 
         String aliveUserKey = EntityUtil.ALIVE_SET;
         Set<String> aliveSet = jedisUtil.smembers(aliveUserKey);
+        System.out.println(aliveSet.toString());
 
         List<UserModel> userModelList = new ArrayList<UserModel>();
         for(String friendId : friendSet){
             if(aliveSet.contains(friendId) && !friendId.equals(userId)){
                 UserModel user = parseUserById(friendId);
+                System.out.println(user.toString());
                 userModelList.add(user);
             }
         }

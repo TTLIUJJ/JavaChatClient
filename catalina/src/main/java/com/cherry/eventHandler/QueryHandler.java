@@ -48,8 +48,21 @@ public class QueryHandler implements EventHandler {
     }
 
     private EventState queryAliveFriends(String userId){
+        System.out.println("1");
         List<UserModel> userList = serverService.getAliveFriendListInfo(userId);
-        EventState.RESPONSE_OK.setMsg("OK\r\n" + JSONObject.toJSONString(userList));
+        StringBuilder sb = new StringBuilder();
+        for(UserModel userModel: userList){
+            System.out.println(JSONObject.toJSONString(userModel));
+            sb.append(JSONObject.toJSONString(userModel));
+            sb.append(";");
+        }
+        System.out.println("2");
+        if(!userList.isEmpty()){
+            String response = sb.substring(0, sb.length()-1);
+            System.out.println(response);
+            EventState.RESPONSE_OK.setMsg("OK\r\n" + response);
+        }
+        System.out.println("3");
         return EventState.RESPONSE_OK;
     }
 
