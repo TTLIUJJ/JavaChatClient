@@ -120,7 +120,7 @@ public class CentralService{
         char mode = (Character) requestInfo.get("mode");
         switch (mode){
             case 'p':
-                System.out.println("send message to friend");
+                System.out.println(requestInfo.toString());
 
                 UserModel user = onlineFriends.get((String) requestInfo.get("friend"));
                 String ip = user.getIp();
@@ -135,7 +135,6 @@ public class CentralService{
                     System.out.println("IOException in chat mode p");
                 }
 
-                System.out.println(requestInfo.toString());
                 break;
             case 'g':
                 break;
